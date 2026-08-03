@@ -36,10 +36,14 @@ const createOrder = async (req, res) => {
         paymentMethod: paymentMethod
     });
 
+    cart.items = [];
+    await cart.save();
+
     res.status(201).json({
         message: "Order created successfully",
         order: newOrder
     });
+
 };
 
 module.exports = {createOrder};
