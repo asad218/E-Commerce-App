@@ -56,13 +56,17 @@ const createOrder = async (req, res) => {
         line_items: line_items,
         mode: 'payment',
         success_url: 'https://example.com/success',
-        cancel_url: 'https://example.com/cancel'
+        cancel_url: 'https://example.com/cancel',
+        metadata: {
+          orderId: newOrder._id.toString()
+        }
     });
 
 
     res.status(201).json({
         message: "Order created successfully",
-        order: newOrder
+        order: newOrder,
+        url: session.url
     });
 
 };

@@ -14,7 +14,14 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // event.type tells us what happened — we'll handle this next
+  if (event.type === 'checkout.session.completed') {
+  const session = event.data.object;
+  const orderId = session.metadata.orderId;
+
+  await OrderModel.findByIdAndUpdate(orderId, {
+    paymentStatus: 'Paid'
+  });
+}
 
   res.status(200).json({ received: true });
 });
