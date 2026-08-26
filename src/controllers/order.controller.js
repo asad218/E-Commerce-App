@@ -1,6 +1,7 @@
 const OrderModel = require('../models/order.model');
 const CartModel = require('../models/cart.model');
 const Product = require('../models/product.model');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const createOrder = async (req, res) => {
     const { paymentMethod } = req.body;
@@ -38,6 +39,26 @@ const createOrder = async (req, res) => {
 
     cart.items = [];
     await cart.save();
+
+    const line_items = orderItems.map(item => ({
+         price_data :{
+            currency : 'inr',
+            product_data : {
+                name : 'Item'
+            },
+            unit_amount : item.priceAtPurchase * 100
+        },
+        quantity : item.quantity
+    }))
+
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: line_items,
+        mode: 'payment',
+        success_url: 'https://example.com/success',
+        cancel_url: 'https://example.com/cancel'
+    });
+
 
     res.status(201).json({
         message: "Order created successfully",
