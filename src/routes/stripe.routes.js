@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const OrderModel = require('../models/order.model');
+const CartModel = require('../models/cart.model')
 
 router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
@@ -18,10 +19,16 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
   const session = event.data.object;
   const orderId = session.metadata.orderId;
 
-  await OrderModel.findByIdAndUpdate(orderId, {
+const updatedOrder = await OrderModel.findByIdAndUpdate(orderId, {
     paymentStatus: 'Paid'
   });
+
+   const cart = await CartModel.findOne({ user: updatedOrder.user });
+    cart.items = [];
+    await cart.save();
 }
+
+
 
   res.status(200).json({ received: true });
 });

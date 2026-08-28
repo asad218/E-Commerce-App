@@ -37,8 +37,7 @@ const createOrder = async (req, res) => {
         paymentMethod: paymentMethod
     });
 
-    cart.items = [];
-    await cart.save();
+   
 
     const line_items = orderItems.map(item => ({
          price_data :{
