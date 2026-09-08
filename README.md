@@ -79,7 +79,7 @@ E-commerce/
 ├── .env.example                 # Template for required environment variables
 ├── Dockerfile                   # Docker build instructions
 ├── package.json                 # Project dependencies & scripts
-├── server.js                    # Application entry point (runs on port 3000)
+├── server.js                    # Application entry point ( port 3000)
 └── README.md                    # Project documentation
 ```
 
